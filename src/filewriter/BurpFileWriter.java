@@ -1,27 +1,18 @@
-package hackoverviewer;
+package filewriter;
 
 import burp.IBurpExtenderCallbacks;
 import burp.IExtensionHelpers;
 import burp.IHttpListener;
 import burp.IHttpRequestResponse;
-import burp.IParameter;
 import burp.IRequestInfo;
 import burp.IResponseInfo;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import org.json.simple.JSONObject;
 
-public final class DemoExtender implements IHttpListener {
+public final class BurpFileWriter implements IHttpListener {
 
     IBurpExtenderCallbacks extenderCallbacks;
     IExtensionHelpers extenderHelpers;
@@ -35,6 +26,13 @@ public final class DemoExtender implements IHttpListener {
     public static IBurpExtenderCallbacks callbacks;
     public static String extensionName = "File Writer";
     
+    /**
+     * Process request / response
+     * 
+     * @param toolFlag
+     * @param messageIsRequest
+     * @param messageInfo 
+     */
     public void processHttpMessage(int toolFlag, boolean messageIsRequest, IHttpRequestResponse messageInfo) {
         
      if(toolFlag == IBurpExtenderCallbacks.TOOL_PROXY && messageIsRequest == true)
@@ -44,7 +42,6 @@ public final class DemoExtender implements IHttpListener {
         
         domainName = requestInfo.getUrl().getHost(); 
         url = requestInfo.getUrl().toString(); 
-        
         
         JSONObject requestJsonObject = new JSONObject();
         requestJsonObject.put("domain", domainName);
@@ -62,7 +59,6 @@ public final class DemoExtender implements IHttpListener {
         json.put("request", requestJsonObject);
         json.put("response", responseJsonObject);
 
-
         byte[] byte_Request = messageInfo.getResponse();
         byte[] byte_body = Arrays.copyOfRange(byte_Request, responseInfo.getBodyOffset(), byte_Request.length);//not length-1
         String body = new String(byte_body);
@@ -71,15 +67,9 @@ public final class DemoExtender implements IHttpListener {
         
         // create folder if don't exists
         createFolder(path+"/"+domainName);
-        
-        callbacks.printOutput(domainName);
-
-        
-        
+                
         String filePath = url.replace(requestInfo.getUrl().getProtocol()+"://", "").replace(":"+requestInfo.getUrl().getPort(), "");
         
-        callbacks.printOutput(filePath);
-
         // write request
         writeToFile(path+"/"+filePath, body);
         
@@ -87,15 +77,27 @@ public final class DemoExtender implements IHttpListener {
         writeToFile(path+"/"+filePath+".data", json.toJSONString());
     }
     
-    public DemoExtender(IBurpExtenderCallbacks callbacks) {   
+    /**
+     * Initial script
+     * 
+     * @param callbacks 
+     */
+    public BurpFileWriter(IBurpExtenderCallbacks callbacks) {   
         extenderCallbacks = callbacks;
         extenderHelpers = callbacks.getHelpers();
         
         folder = System.getProperty("user.dir")+"/filewriter";
         
         createFolder(folder);
+        
+        callbacks.printOutput("Writing files to: "+folder);
     }  
     
+    /**
+     * Create initial folder
+     * 
+     * @param path 
+     */
     public void createFolder(String path) {
         File theDir = new File(path);
         if (!theDir.exists()){
@@ -103,10 +105,13 @@ public final class DemoExtender implements IHttpListener {
         }
     }
     
+    /**
+     * Write file to path
+     * 
+     * @param path
+     * @param text 
+     */
     public void writeToFile(String path, String text) {
-       
-        callbacks.printOutput(path);
-        
         try {
             File theDir = new File(path);
             if (!theDir.exists()){
@@ -116,9 +121,8 @@ public final class DemoExtender implements IHttpListener {
             FileWriter myWriter = new FileWriter(path);
             myWriter.write(text);
             myWriter.close();
-            callbacks.printOutput("Successfully wrote to the file.");
         } catch (IOException e) {
-            callbacks.printOutput(e.getMessage());
+            callbacks.printOutput(path+" : "+e.getMessage());
         }
     }
 }

@@ -1,17 +1,17 @@
 package burp;
 
 import java.awt.Component;
-import hackoverviewer.DemoExtender;
+import filewriter.BurpFileWriter;
 
 public class BurpExtender implements IBurpExtender {
 
     private IExtensionHelpers helpers;
 
     public void registerExtenderCallbacks(IBurpExtenderCallbacks callbacks) {
-        DemoExtender.callbacks = callbacks;
+        BurpFileWriter.callbacks = callbacks;
         // set our extension name
-        callbacks.setExtensionName(DemoExtender.extensionName);
+        callbacks.setExtensionName(BurpFileWriter.extensionName);
         this.helpers = callbacks.getHelpers();
-        callbacks.registerHttpListener(new DemoExtender(callbacks));
+        callbacks.registerHttpListener(new BurpFileWriter(callbacks));
     }
 }
