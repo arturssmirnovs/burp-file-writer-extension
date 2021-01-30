@@ -1,4 +1,4 @@
-<h4 align="center">Burp File Writer Extension</h4>
+<h1 align="center">Burp File Writer Extension</h1>
 
 <p align="center">This burp extension writes all your requests in your burp software directory /filewriter folder that you can use later to do automated file scanning, etc.</p>
 
