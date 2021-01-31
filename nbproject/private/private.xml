@@ -3,10 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/var/www/hackoverviewer-burp-extension/src/hackoverviewer/DemoExtender.java</file>
-            <file>file:/var/www/hackoverviewer-burp-extension/src/burp/IResponseInfo.java</file>
-            <file>file:/var/www/hackoverviewer-burp-extension/src/burp/IHttpRequestResponse.java</file>
-            <file>file:/var/www/hackoverviewer-burp-extension/src/burp/IExtensionHelpers.java</file>
+            <file>file:/var/www/hackoverviewer-burp-extension/src/burp/BurpExtender.java</file>
+            <file>file:/var/www/hackoverviewer-burp-extension/src/filewriter/BurpFileWriter.java</file>
+            <file>file:/var/www/hackoverviewer-burp-extension/src/simple/ItemList.java</file>
         </group>
     </open-files>
 </project-private>

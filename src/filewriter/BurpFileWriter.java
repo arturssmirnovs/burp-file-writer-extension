@@ -38,6 +38,13 @@ public final class BurpFileWriter implements IHttpListener {
      if(toolFlag == IBurpExtenderCallbacks.TOOL_PROXY && messageIsRequest == true)
         requestInfo = extenderHelpers.analyzeRequest(messageInfo);
      
+        // checking if response is null
+        try {
+            int x = messageInfo.getResponse().length;
+        } catch(Exception e) {
+            return;
+        }
+        
         responseInfo = extenderHelpers.analyzeResponse(messageInfo.getResponse());
         
         domainName = requestInfo.getUrl().getHost(); 
@@ -47,13 +54,13 @@ public final class BurpFileWriter implements IHttpListener {
         requestJsonObject.put("domain", domainName);
         requestJsonObject.put("url", url);
         requestJsonObject.put("method", requestInfo.getMethod());
+        requestJsonObject.put("contentType", requestInfo.getContentType());
         requestJsonObject.put("headers", requestInfo.getHeaders().toString());
 
         JSONObject responseJsonObject = new JSONObject();
+        
         responseJsonObject.put("status", String.valueOf(responseInfo.getStatusCode()));
-        responseJsonObject.put("cookie", String.valueOf(responseInfo.getCookies()));
         responseJsonObject.put("headers", String.valueOf(responseInfo.getHeaders()));
-        responseJsonObject.put("status", String.valueOf(responseInfo.getStatusCode()));
 
         JSONObject json = new JSONObject();
         json.put("request", requestJsonObject);
@@ -70,6 +77,12 @@ public final class BurpFileWriter implements IHttpListener {
                 
         String filePath = url.replace(requestInfo.getUrl().getProtocol()+"://", "").replace(":"+requestInfo.getUrl().getPort(), "");
         
+        if (filePath.endsWith("/")) {
+            filePath = filePath+"index";
+        }
+        
+        json.put("path", filePath);
+
         // write request
         writeToFile(path+"/"+filePath, body);
         
