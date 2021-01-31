@@ -10,7 +10,6 @@
 ## Known issues
 
 * Long URL's trigger error: filename to long
-* website index page not written eg: example.com
 
 ## Download
 
